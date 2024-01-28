@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./package.json:/app/package.json
+    environment:
+      - DB_HOST=$DB_HOST
+      - DB_USER=$DB_USER
+      - DB_PASS=$DB_PASS
+      - DB_NAME=$DB_NAME
+      - DB_PORT=$DB_PORT
+    env_file:
+      - .env
+
+  db:
+    image: mariadb:10.5.8
+    volumes:
+      - ./data/mysql:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    environment:
+      - MYSQL_ROOT_PASSWORD=$DB_PASS
+      - MYSQL_DATABASE=$DB_NAME
+    ports:
+      - "3306:3306"
+    env_file:
+      - .env
